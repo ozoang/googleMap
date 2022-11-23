@@ -1,0 +1,46 @@
+<mat-drawer-container hasBackdrop="false">
+    <mat-drawer #drawer mode="over">
+        <div class="row" style="margin-right: 0px;">
+            <div class="col" style="text-align: right;padding-right: 0px;">
+                <span class="btn btn-dark" (click)="drawer.toggle()" style="cursor: pointer;">&#60;</span>
+            </div>
+            <div class="col-md-10 offset-md-1">
+                <mat-form-field class="w-100 mt-3" floatLabel="always">
+                    <mat-label>ที่อยู่ร้าน</mat-label>
+                    <input matInput [(ngModel)]="myLocation.value" placeholder="lat,lng" autocomplete="off">
+                </mat-form-field>
+
+                <div *ngFor="let location of locations; let i = index">
+                    <mat-form-field class="w-100 mt-3" floatLabel="always">
+                        <mat-label>สถานที่ {{i+1}} ที่ต้องการจัดส่ง</mat-label>
+                        <input matInput [(ngModel)]="location.value" placeholder="lat,lng" autocomplete="off">
+                    </mat-form-field>
+                </div>
+
+                <div class="col mt-3" style="padding-left: 0px;">
+                    <button class="btn btn-primary" style="width: 45px;" (click)="addLocation()">+</button>
+                </div>
+                <div class="col mt-3" style="text-align: right;">
+                    <button class="btn btn-primary" style="width: 100px;" (click)="submit();drawer.toggle();">submit</button>
+                </div>
+            </div>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content>
+        <span class="btn btn-dark" (click)="drawer.toggle()" style="cursor: pointer;">&#62;</span>
+
+        <h3>Directions</h3>
+        <div class="container-fluid mt-3">
+            <div *ngIf="apiLoaded | async">
+                <google-map #map width="100%" [center]="centerPosition" [zoom]="13" (centerChanged)="centerPosition">
+                    <!-- <map-marker [position]="currentPosition">
+                    </map-marker>
+                    <map-marker *ngFor="let markerPosition of locationLatLng" [position]="markerPosition">
+                    </map-marker> -->
+                    <map-directions-renderer *ngIf="(directionsResults$ | async) as directionsResults"
+                           [directions]="directionsResults"></map-directions-renderer>
+                </google-map>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>
