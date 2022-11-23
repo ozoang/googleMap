@@ -5,7 +5,7 @@ import { BehaviorSubject } from "rxjs";
 @Injectable({
     providedIn: 'root'
 })
-export class mapService {
+export class MapService {
     googlemapApiKey = 'AIzaSyBhStf0tP88vYUXIR0t7GpEaVkmrf2LKx4';
 
 

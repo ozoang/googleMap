@@ -1,8 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MapDirectionsService } from '@angular/google-maps';
+import { MapDirectionsRenderer, MapDirectionsService } from '@angular/google-maps';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { DialogService } from '../service/dialog.service';
-import { mapService } from '../service/map.service';
+import { MapService } from '../service/map.service';
 
 @Component({
   selector: 'app-main',
@@ -26,11 +26,12 @@ export class MainComponent implements OnInit {
 
   constructor(
     private mapDirectionsService: MapDirectionsService,
-    private ggmService: mapService
+    // private mapDirectionsRender: MapDirectionsRenderer,
+    private mapService: MapService
   ) { }
 
   ngOnInit(): void {
-    this.apiLoaded = this.ggmService.loadApi();
+    this.apiLoaded = this.mapService.loadApi();
     this.direction()
   }
 
@@ -43,6 +44,10 @@ export class MainComponent implements OnInit {
     console.log('onadd ', this.locations.length);
   }
 
+  removeInput(index:number): void{
+    this.locations.splice(index,1);
+  }
+
   submit(): void {
     if (!this.myLocation.value) return alert('ไม่มีสถานที่เริ่มต้น');
     if (!this.locations.length) return alert('ไม่มีสถานที่เป้าหมาย');
@@ -51,7 +56,6 @@ export class MainComponent implements OnInit {
     this.waypts = [];
     for (let i = 0; i < this.locations.length; i++) {
       // this.locationLatLng.push({lat:Number(this.locations[i].value.split(',')[0]),lng:Number(this.locations[i].value.split(',')[1])});
-      
       this.waypts.push({
         location: this.locations[i].value,
         stopover: true,
@@ -62,6 +66,8 @@ export class MainComponent implements OnInit {
     this.currentPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
     this.centerPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
     this.ngOnInit();
+    // let panel = this.mapDirectionsRender.getPanel();
+    // console.log(panel)
   }
 
   ngAfterViewInit(): void {
