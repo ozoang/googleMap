@@ -21,7 +21,7 @@
                     </mat-form-field>
                 </div>
 
-                <div class="col mt-3" style="padding-left: 0px;">
+                <div class="col mt-3" style="padding-left: 0px;" *ngIf="locations.length && locations.length < 10">
                     <button class="btn btn-primary" style="width: 45px;" id="addLocation" (click)="addLocation()">+</button>
                 </div>
                 <div class="col mt-3" style="text-align: right;">

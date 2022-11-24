@@ -41,7 +41,7 @@ import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
     HttpClientModule,
     HttpClientJsonpModule
   ],
-  providers: [],
+  providers: [MapDirectionsRenderer,GoogleMap],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

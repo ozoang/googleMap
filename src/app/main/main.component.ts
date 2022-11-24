@@ -1,38 +1,40 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MapDirectionsRenderer, MapDirectionsService } from '@angular/google-maps';
+import { MapDirectionsService } from '@angular/google-maps';
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { DialogService } from '../service/dialog.service';
 import { MapService } from '../service/map.service';
-
+import { Service } from '../service/service';
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
-  // @ViewChild('drawer') drawer: ElementRef;
-  directionsResults$: Observable<google.maps.DirectionsResult|undefined>;
-
+  directionsResults$: Observable<google.maps.DirectionsResult | undefined>;
   myLocation: any = { value: '' };
+  storeLocation: any = { value: '' };
   locations: any[] = [{ value: '' }];
 
   locationLatLng: any[] = [];
-
 
   currentPosition: google.maps.LatLngLiteral;
   centerPosition: google.maps.LatLngLiteral;
   apiLoaded: BehaviorSubject<boolean>;
   waypts: google.maps.DirectionsWaypoint[] = [];
 
+  isStoreId = false;
+
+  // private mapDirectionsRender: MapDirectionsRenderer;
+
   constructor(
     private mapDirectionsService: MapDirectionsService,
-    // private mapDirectionsRender: MapDirectionsRenderer,
-    private mapService: MapService
+    private mapService: MapService,
+    private service: Service
   ) { }
 
   ngOnInit(): void {
+
     this.apiLoaded = this.mapService.loadApi();
-    this.direction()
+    this.direction();
   }
 
   addLocation(): void {
@@ -41,17 +43,38 @@ export class MainComponent implements OnInit {
     } else {
       alert('ใส่จำนวนสถานที่ได้มากที่สุด 10 แห่ง');
     }
-    console.log('onadd ', this.locations.length);
   }
 
-  removeInput(index:number): void{
-    this.locations.splice(index,1);
+  removeInput(index: number): void {
+    this.locations.splice(index, 1);
   }
 
   submit(): void {
-    if (!this.myLocation.value) return alert('ไม่มีสถานที่เริ่มต้น');
-    if (!this.locations.length) return alert('ไม่มีสถานที่เป้าหมาย');
-    
+    console.log('1st mylo', this.myLocation)
+    const latLngRegEx = /^[-+]?([1-8]?\d(.\d+)?|90(.0+)?),\s*[-+]?(180(.0+)?|((1[0-7]\d)|([1-9]?\d))(.\d+)?)$/;
+    const storeIdRegEx = /^[0-9]*$/;
+    if (!this.myLocation.value.trim()) return alert('ไม่มีสถานที่เริ่มต้น');
+    if (this.locations[0].value.trim() == '') return alert('ไม่มีสถานที่เป้าหมาย');
+
+    if (storeIdRegEx.test(this.myLocation.value.trim())) {
+      this.isStoreId = true;
+      // this.getLatLng(this.myLocation.value.trim());
+      // this.service.getLatLng(this.myLocation.value).subscribe(res => {
+      //   if (res.error) {
+      //     alert(res.error);
+      //   }
+      //   this.myLocation.value = res.result.lat + ',' + res.result.lng;
+      //   console.log('res', res.result);
+      //   console.log('mystorelo', this.storeLocation);
+      //   console.log('mystorelo', this.myLocation);
+      // })
+
+    } else if (!latLngRegEx.test(this.myLocation.value.trim())) return alert('กรุณากรอก latitude, longitude เป็นตัวเลข');
+
+    this.locations.find(locationLatLng => {
+      if (!latLngRegEx.test(locationLatLng.value.trim())) return alert('กรุณากรอก latitude, longitude เป็นตัวเลข')
+    })
+
     this.locationLatLng = [];
     this.waypts = [];
     for (let i = 0; i < this.locations.length; i++) {
@@ -63,11 +86,12 @@ export class MainComponent implements OnInit {
     }
 
     //13.903863781122176, 100.52815158963804
+    // if(this.storeLocation.value!=''){console.log('asd'); this.myLocation.value = this.storeLocation.value};
+    
     this.currentPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
+    console.log('cur', this.currentPosition)
     this.centerPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
     this.ngOnInit();
-    // let panel = this.mapDirectionsRender.getPanel();
-    // console.log(panel)
   }
 
   ngAfterViewInit(): void {
@@ -84,12 +108,23 @@ export class MainComponent implements OnInit {
 
   direction() {
     const request: google.maps.DirectionsRequest = {
-      origin: this.currentPosition,
-      destination: this.currentPosition,
+      origin: this.currentPosition ? this.currentPosition : '',
+      destination: this.currentPosition ? this.currentPosition : '',
       waypoints: this.waypts,
       optimizeWaypoints: true,
       travelMode: google.maps.TravelMode.DRIVING
     };
     this.directionsResults$ = this.mapDirectionsService.route(request).pipe(map(response => response.result));
   }
+
+  getLatLng(storeId: string) {
+    this.service.getLatLng(storeId).subscribe(res => {
+      if (res.error) {
+        alert(res.error);
+      }
+      this.storeLocation.value = res.result.lat + ',' + res.result.lng;
+    })
+  }
+
+
 }
