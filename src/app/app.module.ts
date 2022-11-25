@@ -9,7 +9,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MainComponent } from './main/main.component';
-import { LocationDialogComponent } from './location-dialog/location-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +21,6 @@ import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
   declarations: [
     AppComponent,
     MainComponent,
-    LocationDialogComponent
   ],
   imports: [
     BrowserModule,

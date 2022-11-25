@@ -58,18 +58,11 @@ export class MainComponent implements OnInit {
 
     if (storeIdRegEx.test(this.myLocation.value.trim())) {
       this.isStoreId = true;
-      // this.getLatLng(this.myLocation.value.trim());
-      // this.service.getLatLng(this.myLocation.value).subscribe(res => {
-      //   if (res.error) {
-      //     alert(res.error);
-      //   }
-      //   this.myLocation.value = res.result.lat + ',' + res.result.lng;
-      //   console.log('res', res.result);
-      //   console.log('mystorelo', this.storeLocation);
-      //   console.log('mystorelo', this.myLocation);
-      // })
 
-    } else if (!latLngRegEx.test(this.myLocation.value.trim())) return alert('กรุณากรอก latitude, longitude เป็นตัวเลข');
+    } else if (!latLngRegEx.test(this.myLocation.value.trim())) {
+
+      return alert('กรุณากรอก latitude, longitude เป็นตัวเลข')
+    } else { this.isStoreId = false; };
 
     this.locations.find(locationLatLng => {
       if (!latLngRegEx.test(locationLatLng.value.trim())) return alert('กรุณากรอก latitude, longitude เป็นตัวเลข')
@@ -78,7 +71,6 @@ export class MainComponent implements OnInit {
     this.locationLatLng = [];
     this.waypts = [];
     for (let i = 0; i < this.locations.length; i++) {
-      // this.locationLatLng.push({lat:Number(this.locations[i].value.split(',')[0]),lng:Number(this.locations[i].value.split(',')[1])});
       this.waypts.push({
         location: this.locations[i].value,
         stopover: true,
@@ -86,12 +78,28 @@ export class MainComponent implements OnInit {
     }
 
     //13.903863781122176, 100.52815158963804
-    // if(this.storeLocation.value!=''){console.log('asd'); this.myLocation.value = this.storeLocation.value};
-    
-    this.currentPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
-    console.log('cur', this.currentPosition)
-    this.centerPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
-    this.ngOnInit();
+
+    if (this.isStoreId) {
+      this.service.getLatLng(this.myLocation.value).subscribe(res => {
+        if (res.error) {
+          alert(res.error);
+        }
+        this.storeLocation.value = res.result.lat + ',' + res.result.lng;
+
+        this.currentPosition = { lat: Number(this.storeLocation.value.split(',')[0]), lng: Number(this.storeLocation.value.split(',')[1]) }
+        this.centerPosition = { lat: Number(this.storeLocation.value.split(',')[0]), lng: Number(this.storeLocation.value.split(',')[1]) }
+        this.ngOnInit();
+      })
+    } else {
+
+
+      this.currentPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
+      this.centerPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
+      this.ngOnInit();
+    }
+
+
+
   }
 
   ngAfterViewInit(): void {
