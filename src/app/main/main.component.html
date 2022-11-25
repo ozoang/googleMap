@@ -59,10 +59,6 @@
             <div *ngIf="apiLoaded | async">
                 <google-map #map width="100vw" height="87vh" h [center]="centerPosition" [zoom]="13"
                     (centerChanged)="centerPosition">
-                    <!-- <map-marker [position]="currentPosition">
-                        </map-marker>
-                        <map-marker *ngFor="let markerPosition of locationLatLng" [position]="markerPosition">
-                        </map-marker> -->
                     <map-directions-renderer *ngIf="(directionsResults$ | async) as directionsResults"
                         [directions]="directionsResults"></map-directions-renderer>
                 </google-map>

@@ -2,12 +2,13 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { MapDirectionsRenderer } from "@angular/google-maps";
 import { BehaviorSubject } from "rxjs";
+import { environment } from "src/environments/environment";
 
 @Injectable({
     providedIn: 'root'
 })
 export class MapService {
-    googlemapApiKey = 'AIzaSyBhStf0tP88vYUXIR0t7GpEaVkmrf2LKx4';
+    googlemapApiKey = environment.googleMapApi;
 
     constructor(
         private http: HttpClient

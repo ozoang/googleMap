@@ -23,8 +23,6 @@ export class MainComponent implements OnInit {
 
   isStoreId = false;
 
-  // private mapDirectionsRender: MapDirectionsRenderer;
-
   constructor(
     private mapDirectionsService: MapDirectionsService,
     private mapService: MapService,
@@ -50,7 +48,6 @@ export class MainComponent implements OnInit {
   }
 
   submit(): void {
-    console.log('1st mylo', this.myLocation)
     const latLngRegEx = /^[-+]?([1-8]?\d(.\d+)?|90(.0+)?),\s*[-+]?(180(.0+)?|((1[0-7]\d)|([1-9]?\d))(.\d+)?)$/;
     const storeIdRegEx = /^[0-9]*$/;
     if (!this.myLocation.value.trim()) return alert('ไม่มีสถานที่เริ่มต้น');
@@ -65,7 +62,7 @@ export class MainComponent implements OnInit {
     } else { this.isStoreId = false; };
 
     this.locations.find(locationLatLng => {
-      if (!latLngRegEx.test(locationLatLng.value.trim())) return alert('กรุณากรอก latitude, longitude เป็นตัวเลข')
+      if (!latLngRegEx.test(locationLatLng.value.trim())) return alert('กรุณากรอก latitude, longitude เป็นตัวเลข');
     })
 
     this.locationLatLng = [];
@@ -85,20 +82,15 @@ export class MainComponent implements OnInit {
           alert(res.error);
         }
         this.storeLocation.value = res.result.lat + ',' + res.result.lng;
-
         this.currentPosition = { lat: Number(this.storeLocation.value.split(',')[0]), lng: Number(this.storeLocation.value.split(',')[1]) }
         this.centerPosition = { lat: Number(this.storeLocation.value.split(',')[0]), lng: Number(this.storeLocation.value.split(',')[1]) }
         this.ngOnInit();
       })
     } else {
-
-
       this.currentPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
       this.centerPosition = { lat: Number(this.myLocation.value.split(',')[0]), lng: Number(this.myLocation.value.split(',')[1]) }
       this.ngOnInit();
     }
-
-
 
   }
 
@@ -124,15 +116,5 @@ export class MainComponent implements OnInit {
     };
     this.directionsResults$ = this.mapDirectionsService.route(request).pipe(map(response => response.result));
   }
-
-  getLatLng(storeId: string) {
-    this.service.getLatLng(storeId).subscribe(res => {
-      if (res.error) {
-        alert(res.error);
-      }
-      this.storeLocation.value = res.result.lat + ',' + res.result.lng;
-    })
-  }
-
 
 }
